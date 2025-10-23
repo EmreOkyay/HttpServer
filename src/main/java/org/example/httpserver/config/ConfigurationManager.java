@@ -16,7 +16,4 @@ public class ConfigurationManager {
     public void loadConfigurationFile(String filePath) {
 
     }
-
-    // comment testing
-    // testing
 }
