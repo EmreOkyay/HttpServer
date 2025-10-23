@@ -18,4 +18,5 @@ public class ConfigurationManager {
     }
 
     // comment testing
+    // testing
 }
