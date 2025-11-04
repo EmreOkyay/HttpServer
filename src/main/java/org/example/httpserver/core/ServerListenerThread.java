@@ -1,5 +1,9 @@
 package org.example.httpserver.core;
 
+import org.example.httpserver.HttpServer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -10,6 +14,7 @@ public class ServerListenerThread extends Thread{
     private int port;
     private String webroot;
     private ServerSocket serverSocket;
+    private final static Logger LOGGER = LoggerFactory.getLogger(HttpServer.class);
 
     public ServerListenerThread(int port, String webroot) {
         this.port = port;
@@ -26,6 +31,8 @@ public class ServerListenerThread extends Thread{
     public void run() {
         try {
             Socket socket = serverSocket.accept();
+
+            LOGGER.info("Connection accepted: {}", socket.getInetAddress());
 
             InputStream inputStream = socket.getInputStream();
             OutputStream outputStream = socket.getOutputStream();
