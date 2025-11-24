@@ -1,5 +1,5 @@
 package org.example.httpserver.http;
 
-public class HttpMethod {
+enum HttpMethod {
     GET, HEAD;
 }
