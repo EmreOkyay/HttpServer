@@ -21,7 +21,11 @@ public class HttpParser {
 
         HttpRequest request = new HttpRequest();
 
-        parseRequestLine(reader, request);
+        try {
+            parseRequestLine(reader, request);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         parseHeaders(reader, request);
         parseBody(reader, request);
 
@@ -29,6 +33,10 @@ public class HttpParser {
     }
 
     private void parseRequestLine(InputStreamReader reader, HttpRequest request) throws IOException {
+        StringBuilder processingDataBuffer = new StringBuilder();
+
+        boolean methodParsed = false;
+        boolean requestTargetParsed = false;
 
         int _byte;
         while ((_byte = reader.read()) >= 0) {
@@ -37,6 +45,19 @@ public class HttpParser {
                 if (_byte == LF) {
                     return;
                 }
+            }
+
+            if (_byte == SP) {
+                // TODO Porcess previous
+                if(!methodParsed) {
+                    request.setMethod(processingDataBuffer.toString());
+                    methodParsed = true;
+                } else if (!requestTargetParsed) {
+                    requestTargetParsed = true;
+                }
+                processingDataBuffer.delete(0, processingDataBuffer.length());
+            } else {
+                processingDataBuffer.append((char) _byte);
             }
         }
     }
