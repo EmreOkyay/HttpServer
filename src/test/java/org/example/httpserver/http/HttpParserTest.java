@@ -8,6 +8,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class HttpParserTest {
 
@@ -20,10 +22,17 @@ class HttpParserTest {
 
     @Test
     void parseHttpRequest() {
-        httpParser.parseHttpRequest(generateValidTestCase());
+        HttpRequest request = httpParser.parseHttpRequest(generateValidGETTestCase());
+
+        assertEquals(request.getMethod(), HttpMethod.GET);
     }
 
-    private InputStream generateValidTestCase() {
+    @Test
+    void parseHttpRequestBadMethod1() {
+        HttpRequest request = httpParser.parseHttpRequest(generateBadTestCaseMethodName1());
+    }
+
+    private InputStream generateValidGETTestCase() {
         String rawData = "GET / HTTP/1.1\r\n" +
                 "Host: localhost:8080\r\n" +
                 "Connection: keep-alive\r\n" +
@@ -34,6 +43,21 @@ class HttpParserTest {
                 "Sec-Fetch-Site: none\r\n" +
                 "Sec-Fetch-Mode: navigate\r\n" +
                 "Accept-Encoding: gzip, deflate, br\r\n" +
+                "Accept-Language: en-US,en;q=0.9,es;q=0.8,pt;q=0.7,de-DE;q=0.6,de;q=0.5,la;q=0.4\r\n" +
+                "\r\n";
+
+        InputStream inputStream = new ByteArrayInputStream(
+                rawData.getBytes(
+                        StandardCharsets.US_ASCII
+                )
+        );
+
+        return inputStream;
+    }
+
+    private InputStream generateBadTestCaseMethodName1() {
+        String rawData = "GET / HTTP/1.1\r\n" +
+                "Host: localhost:8080\r\n" +
                 "Accept-Language: en-US,en;q=0.9,es;q=0.8,pt;q=0.7,de-DE;q=0.6,de;q=0.5,la;q=0.4\r\n" +
                 "\r\n";
 
